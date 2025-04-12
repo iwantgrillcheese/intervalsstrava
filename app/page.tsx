@@ -14,7 +14,8 @@ export default function Home() {
     restDay: 'Sunday',
   })
 
-  const [plan, setPlan] = useState(null)
+  // Explicitly set plan to accept both string and null
+  const [plan, setPlan] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -26,27 +27,6 @@ export default function Home() {
     setLoading(true)
     setPlan(null)
 
-    try {
-      const res = await fetch('/api/generate-plan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      })
-
-      const data = await res.json()
-      setPlan(data.plan || 'No plan returned.')
-    } catch (err) {
-      setPlan('Error generating plan.')
-    }
-
-    setLoading(false)
-  }
-
-  const handleReRoll = async () => {
-    setLoading(true)
-    setPlan('')
-
-    // Simulate new data for re-rolling
     try {
       const res = await fetch('/api/generate-plan', {
         method: 'POST',
@@ -101,13 +81,6 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <button
-            className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-400"
-            onClick={handleReRoll}
-            disabled={loading}
-          >
-            Re-roll Plan
-          </button>
         </div>
       )}
     </main>

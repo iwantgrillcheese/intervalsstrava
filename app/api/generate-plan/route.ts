@@ -26,9 +26,9 @@ export async function POST(req: Request) {
 
     // Make the API call to OpenAI
     const response = await openai.completions.create({
-      model: "gpt-3.5-turbo",  // Using the most updated model
-      prompt: prompt,  // Custom prompt based on user inputs
-      max_tokens: 10000,  // You can adjust this if needed
+      model: "gpt-4",  // Switch to GPT-4 if available
+      prompt: prompt,
+      max_tokens: 1000,  // You can adjust this if needed
     });
 
     // Ensure the response contains valid plan data
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
     // Log the error and return a failure response
     console.error("Error generating plan:", error);
     return new Response(
-      JSON.stringify({ error: "Error generating plan" }),
+      JSON.stringify({ error: error.message || "Error generating plan" }),
       { status: 500 }
     );
   }

@@ -1,15 +1,15 @@
 import { OpenAI } from 'openai'
 
-// Create an instance of OpenAI client
+// Initialize OpenAI client correctly
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,  // Make sure your key is properly set in Vercel
+  apiKey: process.env.OPENAI_API_KEY,  // Ensure the key is correctly set in Vercel
 })
 
 export async function POST(req: Request) {
   const formData = await req.json()
-
+  
   const { raceType, raceDate, bikeFtp, runPace, swimPace, experience, maxHours, restDay } = formData
-
+  
   const prompt = `Generate a detailed ${raceType} triathlon training plan starting now until ${raceDate}.
 Use the following athlete data:
 - FTP: ${bikeFtp}w
@@ -22,8 +22,9 @@ Use the following athlete data:
 Make the plan smart, progressive, and athlete-specific. Just return the first week preview. Use a clean readable format.`
 
   try {
+    // Create the completion request
     const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',  // Or use gpt-4 if you want better responses
+      model: 'gpt-3.5-turbo',  // Use "gpt-4" for better results
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.7,
     })

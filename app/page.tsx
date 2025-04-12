@@ -44,7 +44,7 @@ export default function Home() {
 
   const handleReRoll = async () => {
     setPlan('')
-    const event = new Event('submit') as React.FormEvent; // Cast it to FormEvent type
+    const event = new Event('submit') as unknown as React.FormEvent; // Cast it to 'unknown' first
     handleSubmit(event); // Re-trigger form submission
   }
 

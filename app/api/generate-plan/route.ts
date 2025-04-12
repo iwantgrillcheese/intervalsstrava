@@ -14,7 +14,7 @@ export async function POST(req: Request) {
 
   // Create the prompt for OpenAI based on form data
   const prompt = `
-   You're the best triathlon coach in the world. Create a personalized training plan for the following triathlon details:
+    Create a personalized training plan for the following triathlon details:
     Race Type: ${raceType}
     Race Date: ${raceDate}
     Bike FTP: ${bikeFtp} watts

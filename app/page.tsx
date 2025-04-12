@@ -4,12 +4,12 @@ import { useState } from "react";
 
 export default function Home() {
   const [formData, setFormData] = useState({
-    raceType: "70.3",
+    raceType: "Half Ironman (70.3)",
     raceDate: "",
     ftp: "",
-    runThreshold: "",
-    swimThreshold: "",
-    experience: "intermediate",
+    runPace: "",
+    swimPace: "",
+    experience: "Intermediate",
     maxHours: "",
     restDay: "Sunday",
   });
@@ -18,128 +18,82 @@ export default function Home() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitting form:", formData);
+    console.log(formData);
+    // TODO: call backend API to generate plan
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-white px-4 py-12">
-      <h1 className="text-3xl font-bold mb-10">Triathlon Plan Generator</h1>
-      <form onSubmit={handleSubmit} className="w-full max-w-xl space-y-6">
-        <div className="grid grid-cols-1 gap-4">
-          <label className="text-sm font-medium text-gray-700">
-            Race Type
-            <select
-              name="raceType"
-              value={formData.raceType}
-              onChange={handleChange}
-              className="mt-1 w-full border border-gray-300 rounded px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-black"
-            >
-              <option value="sprint">Sprint</option>
-              <option value="olympic">Olympic</option>
-              <option value="70.3">Half Ironman (70.3)</option>
-              <option value="140.6">Full Ironman (140.6)</option>
+    <main className="min-h-screen bg-white text-black p-8">
+      <div className="max-w-2xl mx-auto">
+        <h1 className="text-3xl font-semibold mb-8">Triathlon Plan Generator</h1>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block mb-1 font-medium">Race Type</label>
+            <select name="raceType" value={formData.raceType} onChange={handleChange} className="w-full border rounded px-3 py-2">
+              <option>Sprint</option>
+              <option>Olympic</option>
+              <option>Half Ironman (70.3)</option>
+              <option>Ironman (140.6)</option>
             </select>
-          </label>
+          </div>
 
-          <label className="text-sm font-medium text-gray-700">
-            Race Date
-            <input
-              type="date"
-              name="raceDate"
-              value={formData.raceDate}
-              onChange={handleChange}
-              className="mt-1 w-full border border-gray-300 rounded px-3 py-2 shadow-sm"
-            />
-          </label>
+          <div>
+            <label className="block mb-1 font-medium">Race Date</label>
+            <input type="date" name="raceDate" value={formData.raceDate} onChange={handleChange} className="w-full border rounded px-3 py-2" />
+          </div>
 
-          <label className="text-sm font-medium text-gray-700">
-            Bike FTP (watts)
-            <input
-              type="number"
-              name="ftp"
-              value={formData.ftp}
-              onChange={handleChange}
-              className="mt-1 w-full border border-gray-300 rounded px-3 py-2 shadow-sm"
-            />
-          </label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block mb-1 font-medium">Bike FTP (watts)</label>
+              <input type="number" name="ftp" value={formData.ftp} onChange={handleChange} className="w-full border rounded px-3 py-2" />
+            </div>
 
-          <label className="text-sm font-medium text-gray-700">
-            Run Threshold Pace (min/mile)
-            <input
-              type="text"
-              name="runThreshold"
-              value={formData.runThreshold}
-              onChange={handleChange}
-              placeholder="e.g. 7:30"
-              className="mt-1 w-full border border-gray-300 rounded px-3 py-2 shadow-sm"
-            />
-          </label>
+            <div>
+              <label className="block mb-1 font-medium">Run Threshold Pace (min/mi)</label>
+              <input type="text" name="runPace" value={formData.runPace} onChange={handleChange} className="w-full border rounded px-3 py-2" placeholder="e.g. 7:30" />
+            </div>
 
-          <label className="text-sm font-medium text-gray-700">
-            Swim Threshold Pace (per 100m)
-            <input
-              type="text"
-              name="swimThreshold"
-              value={formData.swimThreshold}
-              onChange={handleChange}
-              placeholder="e.g. 1:38"
-              className="mt-1 w-full border border-gray-300 rounded px-3 py-2 shadow-sm"
-            />
-          </label>
+            <div>
+              <label className="block mb-1 font-medium">Swim Threshold Pace (per 100m)</label>
+              <input type="text" name="swimPace" value={formData.swimPace} onChange={handleChange} className="w-full border rounded px-3 py-2" placeholder="e.g. 1:38" />
+            </div>
 
-          <label className="text-sm font-medium text-gray-700">
-            Experience Level
-            <select
-              name="experience"
-              value={formData.experience}
-              onChange={handleChange}
-              className="mt-1 w-full border border-gray-300 rounded px-3 py-2 shadow-sm"
-            >
-              <option value="beginner">Beginner</option>
-              <option value="intermediate">Intermediate</option>
-              <option value="advanced">Advanced</option>
-            </select>
-          </label>
+            <div>
+              <label className="block mb-1 font-medium">Experience Level</label>
+              <select name="experience" value={formData.experience} onChange={handleChange} className="w-full border rounded px-3 py-2">
+                <option>Beginner</option>
+                <option>Intermediate</option>
+                <option>Advanced</option>
+              </select>
+            </div>
+          </div>
 
-          <label className="text-sm font-medium text-gray-700">
-            Max Weekly Training Hours
-            <input
-              type="number"
-              name="maxHours"
-              value={formData.maxHours}
-              onChange={handleChange}
-              className="mt-1 w-full border border-gray-300 rounded px-3 py-2 shadow-sm"
-            />
-          </label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block mb-1 font-medium">Max Weekly Training Hours</label>
+              <input type="number" name="maxHours" value={formData.maxHours} onChange={handleChange} className="w-full border rounded px-3 py-2" />
+            </div>
 
-          <label className="text-sm font-medium text-gray-700">
-            Preferred Rest Day
-            <select
-              name="restDay"
-              value={formData.restDay}
-              onChange={handleChange}
-              className="mt-1 w-full border border-gray-300 rounded px-3 py-2 shadow-sm"
-            >
-              <option value="Sunday">Sunday</option>
-              <option value="Monday">Monday</option>
-              <option value="Tuesday">Tuesday</option>
-              <option value="Wednesday">Wednesday</option>
-              <option value="Thursday">Thursday</option>
-              <option value="Friday">Friday</option>
-              <option value="Saturday">Saturday</option>
-            </select>
-          </label>
-        </div>
+            <div>
+              <label className="block mb-1 font-medium">Preferred Rest Day</label>
+              <select name="restDay" value={formData.restDay} onChange={handleChange} className="w-full border rounded px-3 py-2">
+                <option>Sunday</option>
+                <option>Monday</option>
+                <option>Tuesday</option>
+                <option>Wednesday</option>
+                <option>Thursday</option>
+                <option>Friday</option>
+                <option>Saturday</option>
+              </select>
+            </div>
+          </div>
 
-        <button
-          type="submit"
-          className="mt-6 w-full bg-black text-white py-3 rounded shadow hover:bg-gray-900 transition"
-        >
-          Generate Plan
-        </button>
-      </form>
+          <button type="submit" className="bg-black text-white px-6 py-3 rounded hover:bg-gray-800 transition">Generate Plan</button>
+        </form>
+      </div>
     </main>
   );
 }

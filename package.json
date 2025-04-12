@@ -7,14 +7,15 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwindcss": "^3.1.7",
-    "openai": "^3.1.0"
+    "openai": "^4.93.0"  // Ensure correct OpenAI version based on the one you're using
   },
   "devDependencies": {
     "typescript": "^5.1.6",
     "@types/react": "^18.0.28",
     "@types/node": "^18.14.6",
     "postcss": "^8.4.18",
-    "autoprefixer": "^10.4.13"
+    "autoprefixer": "^10.4.13",
+    "eslint": "^8.0.0" // Make sure eslint is added since it was missing in the error logs
   },
   "scripts": {
     "dev": "next dev",

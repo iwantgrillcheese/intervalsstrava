@@ -14,8 +14,7 @@ export default function Home() {
     restDay: 'Sunday',
   })
 
-  // Explicitly set plan to accept both string and null
-  const [plan, setPlan] = useState<string | null>(null)
+  const [plan, setPlan] = useState<any[]>([])  // Change plan state to array
   const [loading, setLoading] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -25,7 +24,7 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    setPlan(null)
+    setPlan([])
 
     try {
       const res = await fetch('/api/generate-plan', {
@@ -35,9 +34,9 @@ export default function Home() {
       })
 
       const data = await res.json()
-      setPlan(data.plan || 'No plan returned.')
+      setPlan(data.plan || []) // Expecting an array for plan
     } catch (err) {
-      setPlan('Error generating plan.')
+      setPlan([]) // Set empty array on error
     }
 
     setLoading(false)
@@ -48,14 +47,59 @@ export default function Home() {
       <h1 className="text-3xl font-bold text-center mb-8">TrainGTP</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Form Fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Other fields */}
+          <div>
+            <label>Race Type</label>
+            <select name="raceType" onChange={handleChange} className="w-full border p-2 rounded">
+              <option>Half Ironman (70.3)</option>
+              <option>Ironman (140.6)</option>
+              <option>Olympic</option>
+              <option>Sprint</option>
+            </select>
+          </div>
+
           <div>
             <label>Race Date</label>
             <input type="date" name="raceDate" onChange={handleChange} className="w-full border p-2 rounded" />
           </div>
-          {/* More form inputs as needed */}
+
+          <div>
+            <label>Bike FTP (watts)</label>
+            <input type="number" name="bikeFTP" onChange={handleChange} className="w-full border p-2 rounded" />
+          </div>
+
+          <div>
+            <label>Run Threshold Pace (min/mi)</label>
+            <input name="runPace" placeholder="e.g. 7:30" onChange={handleChange} className="w-full border p-2 rounded" />
+          </div>
+
+          <div>
+            <label>Swim Threshold Pace (per 100m)</label>
+            <input name="swimPace" placeholder="e.g. 1:38" onChange={handleChange} className="w-full border p-2 rounded" />
+          </div>
+
+          <div>
+            <label>Experience Level</label>
+            <select name="experience" onChange={handleChange} className="w-full border p-2 rounded">
+              <option>Beginner</option>
+              <option>Intermediate</option>
+              <option>Advanced</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Max Weekly Training Hours</label>
+            <input type="number" name="maxHours" onChange={handleChange} className="w-full border p-2 rounded" />
+          </div>
+
+          <div>
+            <label>Preferred Rest Day</label>
+            <select name="restDay" onChange={handleChange} className="w-full border p-2 rounded">
+              <option>Sunday</option>
+              <option>Monday</option>
+              <option>Friday</option>
+            </select>
+          </div>
         </div>
 
         <button
@@ -67,10 +111,9 @@ export default function Home() {
         </button>
       </form>
 
-      {/* Plan Preview */}
-      {plan && (
-        <div className="mt-8 whitespace-pre-wrap border p-4 rounded bg-gray-100">
-          {/* Previewing the first 3 days */}
+      {plan.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-xl font-bold mb-4">Training Plan Preview</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {plan.slice(0, 3).map((day, index) => (
               <div key={index} className="p-4 bg-white border rounded shadow-lg">

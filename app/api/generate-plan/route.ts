@@ -24,23 +24,23 @@ export async function POST(req: Request) {
       Generate the plan to cover all aspects of the race: endurance, speed, technique, and recovery. It should be 12 weeks long.
     `;
 
-    // Make the API call to OpenAI
-    const response = await openai.completions.create({
-      model: "gpt-4",  // Using GPT-4, ensure this is the right model for your plan
-      prompt: prompt,  // Custom prompt based on user inputs
-      max_tokens: 1000,  // You can adjust this if needed
+    // Make the API call to OpenAI (Use the chat model)
+    const response = await openai.chat.completions.create({
+      model: "gpt-4",  // Using GPT-4, or use gpt-3.5-turbo if you prefer that
+      messages: [{ role: "system", content: "You are a helpful assistant." }, { role: "user", content: prompt }],
+      max_tokens: 1000,  // Adjust as needed
     });
 
     // Ensure the response contains valid plan data
-    if (!response || !response.choices || !response.choices[0].text) {
+    if (!response || !response.choices || !response.choices[0].message.content) {
       throw new Error("No plan returned.");
     }
 
     // Return the generated training plan
-    return new Response(JSON.stringify({ plan: response.choices[0].text }), {
+    return new Response(JSON.stringify({ plan: response.choices[0].message.content }), {
       status: 200,
     });
-  } catch (error: any) {  // Explicitly type error as `any`
+  } catch (error: any) {
     // Log the error and return a failure response
     console.error("Error generating plan:", error);
     return new Response(

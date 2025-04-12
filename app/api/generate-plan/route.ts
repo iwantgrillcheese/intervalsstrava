@@ -1,13 +1,44 @@
 import { OpenAI } from "openai";
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,  // Ensure your API key is in Vercel or .env.local
+  apiKey: process.env.OPENAI_API_KEY, // Ensure your API key is in Vercel or .env.local
 });
 
 export async function POST(req: Request) {
   try {
     // Get the data sent from the frontend
-    const { raceType, raceDate, bikeFTP, runPace, swimPace, experienceLevel, maxHoursPerWeek, preferredRestDay } = await req.json();
+    const { raceType, raceDate, bikeFTP, runPace, swimPace, experienceLevel, maxHoursPerWeek, preferredRestDay, isDummyData } = await req.json();
+
+    // If isDummyData is true, return dummy data
+    if (isDummyData) {
+      const dummyPlan = [
+        {
+          day: "Monday",
+          workoutType: "Bike",
+          duration: "1 hour",
+          effort: "Moderate",
+          power: "200 watts",
+          pace: "N/A"
+        },
+        {
+          day: "Tuesday",
+          workoutType: "Run",
+          duration: "45 minutes",
+          effort: "Hard",
+          power: "N/A",
+          pace: "6:30 min/mile"
+        },
+        {
+          day: "Wednesday",
+          workoutType: "Swim",
+          duration: "1 hour",
+          effort: "Moderate",
+          power: "N/A",
+          pace: "1:40 min/100m"
+        }
+      ];
+      return new Response(JSON.stringify({ plan: dummyPlan }), { status: 200 });
+    }
 
     // Build a custom prompt using the user inputs
     const prompt = `
@@ -24,27 +55,27 @@ export async function POST(req: Request) {
       Generate the plan to cover all aspects of the race: endurance, speed, technique, and recovery. It should be 12 weeks long.
     `;
 
-    // Make the API call to OpenAI (Use the chat model)
-    const response = await openai.chat.completions.create({
-      model: "gpt-4",  // Using GPT-4, or use gpt-3.5-turbo if you prefer that
-      messages: [{ role: "system", content: "You are a helpful assistant." }, { role: "user", content: prompt }],
-      max_tokens: 1000,  // Adjust as needed
+    // Make the API call to OpenAI
+    const response = await openai.completions.create({
+      model: "gpt-3.5-turbo", // Using the most updated model
+      prompt: prompt, // Custom prompt based on user inputs
+      max_tokens: 1000, // You can adjust this if needed
     });
 
     // Ensure the response contains valid plan data
-    if (!response || !response.choices || !response.choices[0].message.content) {
+    if (!response || !response.choices || !response.choices[0].text) {
       throw new Error("No plan returned.");
     }
 
     // Return the generated training plan
-    return new Response(JSON.stringify({ plan: response.choices[0].message.content }), {
+    return new Response(JSON.stringify({ plan: response.choices[0].text }), {
       status: 200,
     });
-  } catch (error: any) {
+  } catch (error) {
     // Log the error and return a failure response
     console.error("Error generating plan:", error);
     return new Response(
-      JSON.stringify({ error: error.message || "Error generating plan" }),
+      JSON.stringify({ error: "Error generating plan" }),
       { status: 500 }
     );
   }

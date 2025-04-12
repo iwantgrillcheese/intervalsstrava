@@ -26,8 +26,8 @@ export async function POST(req: Request) {
 
     // Make the API call to OpenAI
     const response = await openai.completions.create({
-      model: "gpt-4",  // Switch to GPT-4 if available
-      prompt: prompt,
+      model: "gpt-4",  // Using GPT-4, ensure this is the right model for your plan
+      prompt: prompt,  // Custom prompt based on user inputs
       max_tokens: 1000,  // You can adjust this if needed
     });
 
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     return new Response(JSON.stringify({ plan: response.choices[0].text }), {
       status: 200,
     });
-  } catch (error) {
+  } catch (error: any) {  // Explicitly type error as `any`
     // Log the error and return a failure response
     console.error("Error generating plan:", error);
     return new Response(

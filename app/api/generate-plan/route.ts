@@ -1,39 +1,23 @@
-import { OpenAI } from 'openai'
+import { OpenAI } from 'openai';
 
-// Initialize OpenAI client correctly
+// Initialize OpenAI client with the environment variable from Vercel
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,  // Ensure the key is correctly set in Vercel
-})
+  apiKey: process.env.OPENAI_API_KEY // Ensure your API key is set in Vercel environment variables
+});
 
-export async function POST(req: Request) {
-  const formData = await req.json()
-  
-  const { raceType, raceDate, bikeFtp, runPace, swimPace, experience, maxHours, restDay } = formData
-  
-  const prompt = `Generate a detailed ${raceType} triathlon training plan starting now until ${raceDate}.
-Use the following athlete data:
-- FTP: ${bikeFtp}w
-- Run Threshold Pace: ${runPace} per mile
-- Swim Threshold Pace: ${swimPace} per 100m
-- Max Weekly Hours: ${maxHours}
-- Experience: ${experience}
-- Preferred Rest Day: ${restDay}
-
-Make the plan smart, progressive, and athlete-specific. Just return the first week preview. Use a clean readable format.`
-
+export async function generatePlan(req, res) {
   try {
-    // Create the completion request
-    const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',  // Use "gpt-4" for better results
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 0.7,
-    })
+    // Replace with actual logic to interact with OpenAI and return a response
+    const result = await openai.completions.create({
+      model: 'text-davinci-003',  // Change to appropriate OpenAI model
+      prompt: 'Please generate a training plan for a Half Ironman race.',
+      max_tokens: 100
+    });
 
-    const plan = response.choices?.[0]?.message?.content || 'No plan generated.'
-
-    return NextResponse.json({ plan })
-  } catch (err) {
-    console.error(err)
-    return NextResponse.json({ plan: 'No response from OpenAI.' })
+    // Return response to frontend
+    return res.status(200).json({ plan: result.choices[0].text });
+  } catch (error) {
+    console.error('Error generating plan:', error);
+    return res.status(500).json({ error: 'Error generating plan' });
   }
 }

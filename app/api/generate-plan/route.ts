@@ -12,8 +12,8 @@ export async function POST(req: Request) {
 
     // Make the OpenAI API call
     const result = await openai.completions.create({
-      model: 'text-davinci-003',
-      prompt: prompt || 'Please generate a training plan for a Half Ironman race.',
+      model: 'gpt-3.5-turbo',
+      prompt: prompt || 'You are the best triathlon coach in the world. Please generate a professional level triathlon plan based on the inputs from the form',
       max_tokens: 100
     });
 

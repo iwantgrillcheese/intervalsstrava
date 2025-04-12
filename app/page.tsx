@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
+import { useState } from 'react'
 
 export default function Home() {
   const [form, setForm] = useState({
@@ -12,43 +12,41 @@ export default function Home() {
     experience: 'Intermediate',
     maxHours: '',
     restDay: 'Sunday',
-  });
+  })
 
-  const [plan, setPlan] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [plan, setPlan] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  // Handle form input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
+  }
 
-  // Submit form and generate plan
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setPlan('');
+    e.preventDefault()
+    setLoading(true)
+    setPlan('')
 
     try {
       const res = await fetch('/api/generate-plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
-      });
+      })
 
-      const data = await res.json();
-      setPlan(data.plan || 'No plan returned.');
+      const data = await res.json()
+      setPlan(data.plan || 'No plan returned.')
     } catch (err) {
-      setPlan('Error generating plan.');
+      setPlan('Error generating plan.')
     }
 
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
-  // Re-roll plan (generate a new one)
   const handleReRoll = async () => {
-    setPlan('');
-    handleSubmit(new Event('submit')); // Re-trigger form submission
-  };
+    setPlan('')
+    const event = new Event('submit') as React.FormEvent; // Cast it to FormEvent type
+    handleSubmit(event); // Re-trigger form submission
+  }
 
   return (
     <main className="max-w-2xl mx-auto p-8">
@@ -56,7 +54,6 @@ export default function Home() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Form Inputs */}
           <div>
             <label>Race Type</label>
             <select name="raceType" onChange={handleChange} className="w-full border p-2 rounded">
@@ -121,19 +118,19 @@ export default function Home() {
       </form>
 
       {plan && (
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold">Training Plan Preview</h2>
-          <div className="whitespace-pre-wrap border p-4 rounded bg-gray-100">
-            {plan} {/* Displaying the plan */}
-          </div>
-          <button
-            onClick={handleReRoll}
-            className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-          >
-            Re-Roll Plan
-          </button>
+        <div className="mt-8 whitespace-pre-wrap border p-4 rounded bg-gray-100">
+          {plan}
         </div>
       )}
+
+      {plan && (
+        <button
+          onClick={handleReRoll}
+          className="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Re-roll Plan
+        </button>
+      )}
     </main>
-  );
+  )
 }

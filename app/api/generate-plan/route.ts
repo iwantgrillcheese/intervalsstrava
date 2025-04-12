@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     const response = await openai.completions.create({
       model: "gpt-3.5-turbo",  // Using the most updated model
       prompt: prompt,  // Custom prompt based on user inputs
-      max_tokens: 1000,  // You can adjust this if needed
+      max_tokens: 10000,  // You can adjust this if needed
     });
 
     // Ensure the response contains valid plan data

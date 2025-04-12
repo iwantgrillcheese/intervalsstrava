@@ -1,23 +1,30 @@
 import { OpenAI } from 'openai';
 
-// Initialize OpenAI client with the environment variable from Vercel
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY // Ensure your API key is set in Vercel environment variables
+  apiKey: process.env.OPENAI_API_KEY // Ensure this is set in Vercel environment variables
 });
 
-export async function generatePlan(req, res) {
+// Define the route handler
+export async function POST(req: Request) {
   try {
-    // Replace with actual logic to interact with OpenAI and return a response
+    // Extract data from the request body
+    const { prompt } = await req.json();
+
+    // Make the OpenAI API call
     const result = await openai.completions.create({
-      model: 'text-davinci-003',  // Change to appropriate OpenAI model
-      prompt: 'Please generate a training plan for a Half Ironman race.',
+      model: 'text-davinci-003',
+      prompt: prompt || 'Please generate a training plan for a Half Ironman race.',
       max_tokens: 100
     });
 
-    // Return response to frontend
-    return res.status(200).json({ plan: result.choices[0].text });
+    // Return the result to the client
+    return new Response(JSON.stringify({ plan: result.choices[0].text }), {
+      status: 200,
+    });
   } catch (error) {
     console.error('Error generating plan:', error);
-    return res.status(500).json({ error: 'Error generating plan' });
+    return new Response(JSON.stringify({ error: 'Error generating plan' }), {
+      status: 500,
+    });
   }
 }
